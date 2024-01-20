@@ -97,19 +97,7 @@ void Robot::TeleopPeriodic()
 	// create drive object	
 	// // DeadZone, MaxSpeed
 	//Drive newMec(0.02, 0.8);
-	double joyYPower = joystick.GetY() * fabs(joystick.GetY());
-	double joyZPower = joystick.GetZ() * fabs(joystick.GetZ());
-	double joyXPower = joystick.GetX() * fabs(joystick.GetX());
-	//double joySliderPower = 1 - ((joystick.GetRawAxis(4) + 1) / 2);
 
-	// if (fabs(joyYPower) > 0.1)
-	// {
-	// 	joyXPower = joystick.GetX() * fabs(joystick.GetX());
-	// }
-	// else
-	// {
-	// 	joyXPower = 0;
-	// }
 
 	
 
@@ -121,7 +109,7 @@ void Robot::TeleopPeriodic()
 	// std::cout << "GetRate:" << ahrs->GetRate() << "\n"; 
 	// std::cout << "GetOffset:" << m_gyro.GetOffset() << "\n"; 
 	
-	double YawRads = ahrs->GetAngle() * (M_PI / 180);
+	
 	// double YawX = cos(YawRads);
 	// double YawY = sin(YawRads);
 
@@ -130,30 +118,37 @@ void Robot::TeleopPeriodic()
 	//mec_drive.DriveCartesian(joyZPower * speed, joyXPower * speed, joyYPower * speed);
 	//Wait(0.005_s); // wait 5ms to avoid hogging CPU cycles
  // Invert stick Y axis
-	double x_rotated = joyXPower * cos(YawRads) - joyYPower * sin(YawRads);
-	double y_rotated = joyXPower * sin(YawRads) + joyYPower * cos(YawRads);
+	
+	double YawRads = ahrs->GetAngle() * (M_PI / 180);
+
+	double x_rotated = joystick.GetX() * cos(YawRads) - joystick.GetY() * sin(YawRads);
+	double y_rotated = joystick.GetX() * sin(YawRads) + joystick.GetY() * cos(YawRads);
+
+	double joyYPower = y_rotated * fabs(y_rotated);
+	double joyXPower = x_rotated * fabs(x_rotated);
+	double joyZPower = joystick.GetZ() * fabs(joystick.GetZ());
 
 	double motors [4] = {0,0,0,0};
 
 	if (std::abs(joystick.GetX()) > 0.15 )
 	{
 		// if going left, spin left wheels outer from eachother, spin right inner
-		motors[0] += (-x_rotated * 0.8);
-		motors[1] += (x_rotated * 0.8);
+		motors[0] += (-joyXPower * 0.8);
+		motors[1] += (joyXPower * 0.8);
 
-		motors[2] += (x_rotated * 0.8);
-		motors[3] += (-x_rotated * 0.8);
+		motors[2] += (joyXPower * 0.8);
+		motors[3] += (-joyXPower * 0.8);
 	}
 
 	if (std::abs(joystick.GetY()) > 0.2 )
 	{
 		// left
-		motors[0] += (y_rotated);
-		motors[1] += (y_rotated);
+		motors[0] += (joyYPower);
+		motors[1] += (joyYPower);
 
 		// right
-		motors[2] += (-y_rotated);
-		motors[3] += (-y_rotated);
+		motors[2] += (-joyYPower);
+		motors[3] += (-joyYPower);
 	}
 
 	if (std::abs(joystick.GetZ()) > 0.4 )
