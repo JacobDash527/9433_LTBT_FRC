@@ -154,12 +154,13 @@ void Robot::TeleopPeriodic()
 	if (std::abs(joystick.GetZ()) > 0.4 )
 	{
 		// left
-		motors[0] -= (joystick.GetZ() * fabs(joystick.GetZ()) * 0.65);
-		motors[1] -= (joystick.GetZ() * fabs(joystick.GetZ()) * 0.65);
+		motors[0] -= (joyZPower * 0.65);
+		motors[1] -= (joyZPower * 0.65);
 
-		// right
-		motors[2] -= (joystick.GetZ() * fabs(joystick.GetZ()) * 0.65);
-		motors[3] -= (joystick.GetZ() * fabs(joystick.GetZ()) * 0.65);
+		// Right
+		motors[2] -= (joyZPower * 0.65);
+		motors[3] -= (joyZPower * 0.65);
+
 	}
 
 	frontL.Set(motors[0] * speed);
