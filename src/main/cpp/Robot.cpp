@@ -119,55 +119,12 @@ void Robot::TeleopPeriodic()
 	//Wait(0.005_s); // wait 5ms to avoid hogging CPU cycles
  // Invert stick Y axis
 	
+	
+	
 	double YawRads = ahrs->GetAngle() * (M_PI / 180);
 
-	double x_rotated = joystick.GetX() * cos(YawRads) - joystick.GetY() * sin(YawRads);
-	double y_rotated = joystick.GetX() * sin(YawRads) + joystick.GetY() * cos(YawRads);
+	drive->MecDrive(joystick.GetX(), joystick.GetY(), joystick.GetZ(), YawRads);
 
-	double joyYPower = y_rotated * fabs(y_rotated);
-	double joyXPower = x_rotated * fabs(x_rotated);
-	double joyZPower = joystick.GetZ() * fabs(joystick.GetZ());
-
-	double motors [4] = {0,0,0,0};
-
-	if (std::abs(joystick.GetX()) > 0.15 )
-	{
-		// if going left, spin left wheels outer from eachother, spin right inner
-		motors[0] += (-joyXPower * 0.8);
-		motors[1] += (joyXPower * 0.8);
-
-		motors[2] += (joyXPower * 0.8);
-		motors[3] += (-joyXPower * 0.8);
-	}
-
-	if (std::abs(joystick.GetY()) > 0.2 )
-	{
-		// left
-		motors[0] += (joyYPower);
-		motors[1] += (joyYPower);
-
-		// right
-		motors[2] += (-joyYPower);
-		motors[3] += (-joyYPower);
-	}
-
-	if (std::abs(joystick.GetZ()) > 0.4 )
-	{
-		// left
-		motors[0] -= (joyZPower * 0.65);
-		motors[1] -= (joyZPower * 0.65);
-
-		// Right
-		motors[2] -= (joyZPower * 0.65);
-		motors[3] -= (joyZPower * 0.65);
-
-	}
-
-	frontL.Set(motors[0] * speed);
-	backL.Set(motors[1] * speed);
-
-	backR.Set(motors[2] * speed);
-	frontR.Set(motors[3] * speed);
 
 	// Create new arm object
 	double _leftJoy = -controller.GetRawAxis(1); 
@@ -181,21 +138,21 @@ void Robot::TeleopPeriodic()
     double leftPower = leftJoy;
     double rightPower = _rightJoy * fabs(_rightJoy);
     
-    if (_bButton)
-    {
-        bendOne.Set(0);
-		bendTwo.Set(0);
-    }
-    else if (joyYPower < 0.7)
-    {
-        bendOne.Set(-rightPower * maxSpeed);
-        bendTwo.Set(-leftPower * maxSpeed);
-    }
-	else if (joyYPower > 0.7)
-	{
-		bendOne.Set(ControlMode::PercentOutput,-0.1);
-		bendTwo.Set(ControlMode::PercentOutput,0.1); 
-	}
+    // if (_bButton)
+    // {
+    //     bendOne.Set(0);
+	// 	bendTwo.Set(0);
+    // }
+    // else if (joyYPower < 0.7)
+    // {
+    //     bendOne.Set(-rightPower * maxSpeed);
+    //     bendTwo.Set(-leftPower * maxSpeed);
+    // }
+	// else if (joyYPower > 0.7)
+	// {
+	// 	bendOne.Set(ControlMode::PercentOutput,-0.1);
+	// 	bendTwo.Set(ControlMode::PercentOutput,0.1); 
+	// }
 
 
 	int _lBumper = controller.GetRawButton(5);

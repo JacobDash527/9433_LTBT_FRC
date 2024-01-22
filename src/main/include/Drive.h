@@ -14,13 +14,13 @@ class Drive
 {
 private:
 	// Left
-	WPI_VictorSPX frontL {2};
-	WPI_VictorSPX backL {1};
+	WPI_VictorSPX frontL {1};
+	WPI_VictorSPX backL {0};
 
 
 	// Right
-	WPI_VictorSPX frontR {4};
-	WPI_VictorSPX backR {3};
+	WPI_VictorSPX frontR {3};
+	WPI_VictorSPX backR {2};
 
 	// controller declarations
 	// frc::Joystick controller{1};
@@ -43,7 +43,7 @@ private:
 public:
     Drive(double joySense, double deadZone); // This is the constructor function, which is called when the class is instantiated
 	
-	void MecDrive(double joyY, double joyX, double joyZ); // Call this for MecanumDrive bases 
+	void MecDrive(double joyY, double joyX, double joyZ, double fieldOrient); // Call this for MecanumDrive bases 
 	void TrainDrive(); // Call this for Drive Trains
 
 	// RAW FUNCTIONS for interfacing with drive base 

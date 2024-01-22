@@ -19,9 +19,12 @@
 #include <frc/SPI.h>
 #include "AHRS.h"
 #include <iostream>
+#include "Drive.h"
 
 class Robot : public frc::TimedRobot {
- AHRS *ahrs;  
+ AHRS *ahrs; 
+ Drive *drive;
+ 
  public:
   void RobotInit() override;
   void RobotPeriodic() override;
@@ -35,6 +38,9 @@ class Robot : public frc::TimedRobot {
   void TestPeriodic() override;
 
   Robot() { 
+	//			deadzone, maxspeed
+	drive = new Drive(0.02, 0.7);
+	
 	try {
 			/***********************************************************************
 			 * navX-MXP:
