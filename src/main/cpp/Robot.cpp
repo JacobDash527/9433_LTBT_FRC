@@ -24,8 +24,8 @@
 void Robot::RobotInit() {
 	std::cout << "-- LTBT Robot Program Start --" << std::endl;
 
-	// ahrs->Calibrate();
-	// ahrs->Reset();
+	ahrs->Calibrate();
+	ahrs->Reset();
 
 	
 
@@ -82,7 +82,7 @@ void Robot::AutonomousPeriodic()
 
 void Robot::TeleopInit() 
 {
-	// ahrs->Reset();
+	ahrs->Reset();
 }
 
 void Robot::TeleopPeriodic() 
@@ -114,14 +114,14 @@ void Robot::TeleopPeriodic()
 	
 
 	//std::cout << "GetAngle:" << ahrs->GetAngle() << "\n";
-	// std::cout << "GetRads:" << ahrs->GetAngle() * (M_PI / 180) << "\n"; 
+	std::cout << "GetRads:" << ahrs->GetAngle() * (M_PI / 180) << "\n"; 
 	// std::cout << "GetDisX:" << ahrs->GetDisplacementX() << "\n";
 	// std::cout << "GetDisY:" << ahrs->GetDisplacementY() << "\n";
 	
 	// std::cout << "GetRate:" << ahrs->GetRate() << "\n"; 
 	// std::cout << "GetOffset:" << m_gyro.GetOffset() << "\n"; 
 	
-	//double YawRads = ahrs->GetAngle() * (M_PI / 180);
+	double YawRads = ahrs->GetAngle() * (M_PI / 180);
 	// double YawX = cos(YawRads);
 	// double YawY = sin(YawRads);
 
@@ -132,19 +132,20 @@ void Robot::TeleopPeriodic()
  // Invert stick Y axis
 	// double x_rotated = joyXPower * cos(YawRads) - joyYPower * sin(YawRads);
 	// double y_rotated = joyXPower * sin(YawRads) + joyYPower * cos(YawRads);
-	double x_rotated = joyXPower;
-	double y_rotated = joyYPower;
+	
+	double x_rotated = joyXPower * 1.2;
+	double y_rotated = joyYPower * 1.2;
 
 	double motors [4] = {0,0,0,0};
 
 	if (std::abs(joystick.GetX()) > 0.15 )
 	{
 		// if going left, spin left wheels outer from eachother, spin right inner
-		motors[0] += (-x_rotated * 0.8);
-		motors[1] += (x_rotated * 0.8);
+		motors[0] += (x_rotated * 1);
+		motors[1] += (-x_rotated * 1);
 
-		motors[2] += (x_rotated * 0.8);
-		motors[3] += (-x_rotated * 0.8);
+		motors[2] += (-x_rotated * 1);
+		motors[3] += (x_rotated * 1);
 	}
 
 	if (std::abs(joystick.GetY()) > 0.2 )
@@ -161,14 +162,14 @@ void Robot::TeleopPeriodic()
 	if (std::abs(joystick.GetZ()) > 0.4 )
 	{
 		// left
-		motors[0] -= (joystick.GetZ() * fabs(joystick.GetZ()) * 0.65);
-		motors[1] -= (joystick.GetZ() * fabs(joystick.GetZ()) * 0.65);
+		motors[0] -= (joystick.GetZ());
+		motors[1] -= (joystick.GetZ());
 
-		// right
-		motors[2] -= (joystick.GetZ() * fabs(joystick.GetZ()) * 0.65);
-		motors[3] -= (joystick.GetZ() * fabs(joystick.GetZ()) * 0.65);
+		motors[2] -= (joystick.GetZ());
+		motors[3] -= (joystick.GetZ());
 	}
 
+		// right
 	frontL.Set(motors[0] * speed);
 	backL.Set(motors[1] * speed);
 

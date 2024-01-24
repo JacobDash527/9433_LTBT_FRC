@@ -95,7 +95,7 @@ class Robot : public frc::TimedRobot {
 
 	
 	double maxSpeed = 0.9;
-	double speed = 0.7;
+	double speed = 1;
 	double autoSpeed = -0.5; 
 
 	frc::SlewRateLimiter<units::scalar> filter{0.9 / 1_s};	
