@@ -3,6 +3,7 @@
 // the WPILib BSD license file in the root directory of this project.
 
 #include <math.h>
+#include <algorithm>
 #include "Robot.h"
 #include <unistd.h>
 #include <iostream>
@@ -135,46 +136,44 @@ void Robot::TeleopPeriodic()
 	
 	double x_rotated = joyXPower * 1.2;
 	double y_rotated = joyYPower * 1.2;
+	
+	double translationAngle = atan2(joystick.GetX(), OI.driver.getRawAxis(0));
+    double translationPower = hypot(OI.driver.getRawAxis(0), OI.driver.getRawAxis(1));
+    double turnPower = OI.driver.getRawAxis(2);
 
-	double motors [4] = {0,0,0,0};
+        // use field centric controls by subtracting off the robot angle
+	translationAngle -= YawRads;
+	
+	
+	// calculate motor power
+    double ADPower = translationPower * sqrt(2) * 0.5 * (sin(translationAngle) + cos(translationAngle));
+    double BCPower = translationPower * sqrt(2) * 0.5 * (sin(translationAngle) - cos(translationAngle));
 
-	if (std::abs(joystick.GetX()) > 0.15 )
-	{
-		// if going left, spin left wheels outer from eachother, spin right inner
-		motors[0] += (x_rotated * 1);
-		motors[1] += (-x_rotated * 1);
+    // check if turning power will interfere with normal translation
+    // check ADPower to see if trying to apply turnPower would put motor power over 1.0 or under -1.0
+    double turningScale = std::max(abs(ADPower + turnPower), std::abs(ADPower - turnPower));
+    // check BCPower to see if trying to apply turnPower would put motor power over 1.0 or under -1.0
+    turningScale = std::max(turningScale, std::max(std::abs(BCPower + turnPower), std::abs(BCPower - turnPower)));
 
-		motors[2] += (-x_rotated * 1);
-		motors[3] += (x_rotated * 1);
-	}
+    // adjust turn power scale correctly
+    if (std::abs(turningScale) < 1.0)
+    {
+        turningScale = 1.0;
+    }
 
-	if (std::abs(joystick.GetY()) > 0.2 )
-	{
-		// left
-		motors[0] += (y_rotated);
-		motors[1] += (y_rotated);
+    // set the motors, and divide them by turningScale to make sure none of them go over the top, which would alter the translation angle
+    frontL.Set((ADPower - turningScale) / turningScale);
+    backL.Set((BCPower - turningScale) / turningScale);
+    frontR.Set((BCPower + turningScale) / turningScale);
+    backR.Set((ADPower + turningScale) / turningScale);
 
-		// right
-		motors[2] += (-y_rotated);
-		motors[3] += (-y_rotated);
-	}
-
-	if (std::abs(joystick.GetZ()) > 0.4 )
-	{
-		// left
-		motors[0] -= (joystick.GetZ());
-		motors[1] -= (joystick.GetZ());
-
-		motors[2] -= (joystick.GetZ());
-		motors[3] -= (joystick.GetZ());
-	}
 
 		// right
-	frontL.Set(motors[0] * speed);
-	backL.Set(motors[1] * speed);
+	// frontL.Set(motors[0] * speed);
+	// backL.Set(motors[1] * speed);
 
-	backR.Set(motors[2] * speed);
-	frontR.Set(motors[3] * speed);
+	// backR.Set(motors[2] * speed);
+	// frontR.Set(motors[3] * speed);
 
 	// Create new arm object
 	double _leftJoy = -controller.GetRawAxis(1); 
