@@ -99,13 +99,13 @@ void Robot::TeleopPeriodic()
 	// create drive object	
 	// // DeadZone, MaxSpeed
 	//Drive newMec(0.02, 0.8);
-	double joyYPower = joystick.GetY();
-	double joyZPower = joystick.GetZ();
-	double joyXPower = joystick.GetX();
+	// double joyYPower = joystick.GetY();
+	// double joyZPower = joystick.GetZ();
+	// double joyXPower = joystick.GetX();
 
-	// double joyYPower = controller2.GetRawAxis(1);
-	// double joyZPower = controller2.GetRawAxis(4);
-	// double joyXPower = controller2.GetRawAxis(0); 
+	double joyYPower = controller2.GetRawAxis(1);
+	double joyZPower = controller2.GetRawAxis(4);
+	double joyXPower = controller2.GetRawAxis(0); 
 
 	// if (fabs(joyYPower) > 0.1)
 	// {
@@ -142,18 +142,18 @@ void Robot::TeleopPeriodic()
 
 	double motors [4] = {0,0,0,0};
 
-	if (std::abs(joystick.GetX()) > 0.15 )
-	{
+	// if (std::abs(joystick.GetX()) > 0.15 )
+	// {
 		// if going left, spin left wheels outer from eachother, spin right inner
 		motors[0] += (x_rotated);
 		motors[1] += (-x_rotated);
 
 		motors[2] += (-x_rotated);
 		motors[3] += (x_rotated);
-	}
+	// }
 
-	if (std::abs(joystick.GetY()) > 0.2 )
-	{
+	// if (std::abs(joystick.GetY()) > 0.2 )
+	// {
 		// left
 		motors[0] += (y_rotated);
 		motors[1] += (y_rotated);
@@ -161,10 +161,10 @@ void Robot::TeleopPeriodic()
 		// right
 		motors[2] += (-y_rotated);
 		motors[3] += (-y_rotated);
-	}
+	// }
 
-	if (std::abs(joystick.GetZ()) > 0.4 )
-	{
+	// if (std::abs(joystick.GetZ()) > 0.4 )
+	// {
 		// left
 		motors[0] -= (joyZPower);
 		motors[1] -= (joyZPower);
@@ -172,13 +172,13 @@ void Robot::TeleopPeriodic()
 		// right
 		motors[2] -= (joyZPower);
 		motors[3] -= (joyZPower);
-	}
+	// }
 
-	frontL.Set(motors[0] * speed);
-	backL.Set(motors[1] * speed);
+	frontL.Set(motors[0]);
+	backL.Set(motors[1]);
 
-	backR.Set(motors[2] * speed);
-	frontR.Set(motors[3] * speed);
+	backR.Set(motors[2]);
+	frontR.Set(motors[3]);
 
 	// Create new arm object
 	double _leftJoy = -controller.GetRawAxis(1); 
