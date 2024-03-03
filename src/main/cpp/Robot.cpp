@@ -137,45 +137,64 @@ void Robot::TeleopPeriodic()
 	double x_rotated = joyXPower;
 	double y_rotated = joyYPower;
 
-	double motors [4] = {0,0,0,0};
+	// double motors [4] = {0,0,0,0};
 
-	if (std::abs(joystick.GetX()) > 0.15 )
-	{
-		// if going left, spin left wheels outer from eachother, spin right inner
-		motors[0] += (x_rotated * 0.8);
-		motors[1] += (-x_rotated * 0.8);
+	// if (std::abs(joystick.GetX()) > 0.15 )
+	// {
+	// 	// if going left, spin left wheels outer from eachother, spin right inner
+	// 	motors[0] += (x_rotated * 0.8);
+	// 	motors[1] += (-x_rotated * 0.8);
 
-		motors[2] += (-x_rotated * 0.8);
-		motors[3] += (x_rotated * 0.8);
+	// 	motors[2] += (-x_rotated * 0.8);
+	// 	motors[3] += (x_rotated * 0.8);
+	// }
+
+	// if (std::abs(joystick.GetY()) > 0.2 )
+	// {
+	// 	// left
+	// 	motors[0] += (y_rotated);
+	// 	motors[1] += (y_rotated);
+
+	// 	// right
+	// 	motors[2] += (-y_rotated);
+	// 	motors[3] += (-y_rotated);
+	// }
+
+	// if (std::abs(joystick.GetZ()) > 0.4 )
+	// {
+	// 	// left
+	// 	motors[0] -= (joystick.GetZ() * fabs(joystick.GetZ()) * 1);
+	// 	motors[1] -= (joystick.GetZ() * fabs(joystick.GetZ()) * 1);
+
+	// 	// right
+	// 	motors[2] -= (joystick.GetZ() * fabs(joystick.GetZ()) * 1);
+	// 	motors[3] -= (joystick.GetZ() * fabs(joystick.GetZ()) * 1);
+	// }
+
+	double transX = (-joystick.GetY());
+	double transY = joystick.GetX();
+	double rotate; 
+	if (std::abs(joystick.GetZ()) > 0.4 ) {
+		rotate = joystick.GetZ();
+	}
+	else{
+		rotate = 0;
 	}
 
-	if (std::abs(joystick.GetY()) > 0.2 )
-	{
-		// left
-		motors[0] += (y_rotated);
-		motors[1] += (y_rotated);
+  //wheel speed math
+	double den = std::max(abs(transX)+abs(transY)+abs(rotate), 1.0);
 
-		// right
-		motors[2] += (-y_rotated);
-		motors[3] += (-y_rotated);
-	}
+	double frontLSpeed = (transY - transX - rotate)/den;
+	double backRSpeed = (transY + transX + rotate)/den;
 
-	if (std::abs(joystick.GetZ()) > 0.4 )
-	{
-		// left
-		motors[0] -= (joystick.GetZ() * fabs(joystick.GetZ()) * 1);
-		motors[1] -= (joystick.GetZ() * fabs(joystick.GetZ()) * 1);
+	double backLSpeed = (-transY + transX - rotate)/den;
+	double frontRSpeed = (transY + transX - rotate)/den;
 
-		// right
-		motors[2] -= (joystick.GetZ() * fabs(joystick.GetZ()) * 1);
-		motors[3] -= (joystick.GetZ() * fabs(joystick.GetZ()) * 1);
-	}
+	frontL.Set(ControlMode::PercentOutput, frontLSpeed);
+	backL.Set(ControlMode::PercentOutput, backLSpeed);
 
-	frontL.Set(motors[0] * speed);
-	backL.Set(motors[1] * speed);
-
-	backR.Set(motors[2] * speed);
-	frontR.Set(motors[3] * speed);
+	backR.Set(ControlMode::PercentOutput, backRSpeed);
+	frontR.Set(ControlMode::PercentOutput, frontRSpeed);
 
 	// Create new arm object
 	double _leftJoy = -controller.GetRawAxis(1); 
