@@ -119,7 +119,7 @@ void Robot::TeleopPeriodic()
 	
 
 	//std::cout << "GetAngle:" << ahrs->GetAngle() << "\n";
-	// std::cout << "GetRads:" << ahrs->GetAngle() * (M_PI / 180) << "\n"; 
+	std::cout << "GetRads:" << ahrs->GetAngle() * (M_PI / 180) << "\n"; 
 	// std::cout << "GetDisX:" << ahrs->GetDisplacementX() << "\n";
 	// std::cout << "GetDisY:" << ahrs->GetDisplacementY() << "\n";
 	
@@ -168,6 +168,9 @@ void Robot::TeleopPeriodic()
     backL.Set((BCPower - turningScale) / turningScale);
     frontR.Set((BCPower + turningScale) / turningScale);
     backR.Set((ADPower + turningScale) / turningScale);	
+	std::cout << "ADPower:" << ADPower << "\n"; 
+	std::cout << "BCPower:" << BCPower << "\n"; 
+	std::cout << "turningScale:" << turningScale << "\n"; 
 
 	// Create new arm object
 	double _leftJoy = -controller.GetRawAxis(1); 
