@@ -171,15 +171,9 @@ void Robot::TeleopPeriodic()
 	// 	motors[3] -= (joystick.GetZ() * fabs(joystick.GetZ()) * 1);
 	// }
 
-	double transX = (-joystick.GetY());
-	double transY = joystick.GetX();
-	double rotate; 
-	if (std::abs(joystick.GetZ()) > 0.4 ) {
-		rotate = joystick.GetZ();
-	}
-	else{
-		rotate = 0;
-	}
+	double transX = (-controller2.GetRawAxis(1));
+	double transY = controller2.GetRawAxis(2) * 0.9;
+	double rotate = controller2.GetRawAxis(4);
 
   //wheel speed math
 	double den = std::max(abs(transX)+abs(transY)+abs(rotate), 1.0);
