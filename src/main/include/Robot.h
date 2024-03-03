@@ -79,6 +79,8 @@ class Robot : public frc::TimedRobot {
 	frc::MecanumDrive mec_drive{frontL, backL, frontR, backR};
 
 	WPI_VictorSPX climber {4};
+
+	WPI_VictorSPX arm {6};
 	// WPI_VictorSPX bendTwo {11};
 	// WPI_VictorSPX intake1 {12};
 	// WPI_VictorSPX intake2 {13};

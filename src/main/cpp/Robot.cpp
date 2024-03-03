@@ -137,10 +137,9 @@ void Robot::TeleopPeriodic()
 	double x_rotated = joyXPower * 1.2;
 	double y_rotated = joyYPower * 1.2;
 	
-	double translationAngle = atan2(joystick.GetX(), OI.driver.getRawAxis(0));
-    double translationPower = hypot(OI.driver.getRawAxis(0), OI.driver.getRawAxis(1));
-    double turnPower = OI.driver.getRawAxis(2);
-
+	double translationAngle = atan2(joystick.GetX(), joystick.GetRawAxis(0));
+    double translationPower = hypot(joystick.GetRawAxis(0), joystick.GetRawAxis(1));
+    double turnPower = joystick.GetRawAxis(2);
         // use field centric controls by subtracting off the robot angle
 	translationAngle -= YawRads;
 	
