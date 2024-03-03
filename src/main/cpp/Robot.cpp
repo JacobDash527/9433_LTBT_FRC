@@ -103,9 +103,9 @@ void Robot::TeleopPeriodic()
 	// double joyZPower = joystick.GetZ();
 	// double joyXPower = joystick.GetX();
 
-	double joyYPower = controller2.GetRawAxis(1);
+	double joyYPower = controller2.GetRawAxis(1) * fabs(controller2.GetRawAxis(1));
 	double joyZPower = controller2.GetRawAxis(4);
-	double joyXPower = controller2.GetRawAxis(0); 
+	double joyXPower = controller2.GetRawAxis(0) * fabs(controller2.GetRawAxis(0)); 
 
 	// if (fabs(joyYPower) > 0.1)
 	// {
