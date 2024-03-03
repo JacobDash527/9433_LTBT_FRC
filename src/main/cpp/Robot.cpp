@@ -126,7 +126,7 @@ void Robot::TeleopPeriodic()
 	// std::cout << "GetRate:" << ahrs->GetRate() << "\n"; 
 	// std::cout << "GetOffset:" << m_gyro.GetOffset() << "\n"; 
 	
-	// double YawRads = ahrs->GetAngle() * (M_PI / 180);
+	double YawRads = ahrs->GetAngle() * (M_PI / 180);
 	// double YawX = cos(YawRads);
 	// double YawY = sin(YawRads);
 
@@ -139,46 +139,35 @@ void Robot::TeleopPeriodic()
 	// double y_rotated = joyXPower * sin(YawRads) + joyYPower * cos(YawRads);
 	double x_rotated = joyXPower;
 	double y_rotated = joyYPower;
+	
+	double translationAngle = atan2(joystick.GetX(), joystick.GetY());
+    double translationPower = hypot(joystick.GetY(), joystick.GetX());
+    double turnPower = joystick.GetZ();
+        // use field centric controls by subtracting off the robot angle
+	translationAngle -= YawRads;
+	
+	
+	// calculate motor power
+    double ADPower = translationPower * sqrt(2) * 0.5 * (sin(translationAngle) + cos(translationAngle));
+    double BCPower = translationPower * sqrt(2) * 0.5 * (sin(translationAngle) - cos(translationAngle));
 
-	double motors [4] = {0,0,0,0};
+    // check if turning power will interfere with normal translation
+    // check ADPower to see if trying to apply turnPower would put motor power over 1.0 or under -1.0
+    double turningScale = std::max(abs(ADPower + turnPower), std::abs(ADPower - turnPower));
+    // check BCPower to see if trying to apply turnPower would put motor power over 1.0 or under -1.0
+    turningScale = std::max(turningScale, std::max(std::abs(BCPower + turnPower), std::abs(BCPower - turnPower)));
 
-	if (std::abs(joystick.GetX()) > 0.15 )
-	{
-		// if going left, spin left wheels outer from eachother, spin right inner
-		motors[0] += (x_rotated);
-		motors[1] += (-x_rotated);
+    // adjust turn power scale correctly
+    if (std::abs(turningScale) < 1.0)
+    {
+        turningScale = 1.0;
+    }
 
-		motors[2] += (-x_rotated);
-		motors[3] += (x_rotated);
-	}
-
-	if (std::abs(joystick.GetY()) > 0.2 )
-	{
-		// left
-		motors[0] += (y_rotated);
-		motors[1] += (y_rotated);
-
-		// right
-		motors[2] += (-y_rotated);
-		motors[3] += (-y_rotated);
-	}
-
-	if (std::abs(joystick.GetZ()) > 0.4 )
-	{
-		// left
-		motors[0] -= (joyZPower);
-		motors[1] -= (joyZPower);
-
-		// right
-		motors[2] -= (joyZPower);
-		motors[3] -= (joyZPower);
-	}
-
-	frontL.Set(motors[0] * speed);
-	backL.Set(motors[1] * speed);
-
-	backR.Set(motors[2] * speed);
-	frontR.Set(motors[3] * speed);
+    // set the motors, and divide them by turningScale to make sure none of them go over the top, which would alter the translation angle
+    frontL.Set((ADPower - turningScale) / turningScale);
+    backL.Set((BCPower - turningScale) / turningScale);
+    frontR.Set((BCPower + turningScale) / turningScale);
+    backR.Set((ADPower + turningScale) / turningScale);	
 
 	// Create new arm object
 	double _leftJoy = -controller.GetRawAxis(1); 
