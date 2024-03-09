@@ -84,6 +84,8 @@ void Robot::AutonomousPeriodic()
 
 
 	double motors [4] = {0,0,0,0};
+
+	// Note: you may need to change these from += and -=
 	
 	if (hasMovedY == false) {
 		double moveSpeed = moveYPID.Calculate(displacementY, 1) * autoSpeed;
