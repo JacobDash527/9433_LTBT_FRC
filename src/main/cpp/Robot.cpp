@@ -198,8 +198,8 @@ void Robot::TeleopPeriodic()
 	motors[0] = power * CosComponent/MaxComponent + joyZPower;
 	motors[1] = power * SinComponent/MaxComponent + joyZPower;
 
-	motors[2] = power * CosComponent/MaxComponent + joyZPower;
-	motors[3] = power * SinComponent/MaxComponent + joyZPower;
+	motors[2] = power * CosComponent/MaxComponent - joyZPower;
+	motors[3] = power * SinComponent/MaxComponent - joyZPower;
 
 	if ((power + fabs(joyZPower)) > 1) {
 		motors[0] /= power + fabs(joyZPower);
