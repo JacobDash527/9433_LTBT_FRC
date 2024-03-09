@@ -185,43 +185,29 @@ void Robot::TeleopPeriodic()
 	
 	double YawRads = ahrs->GetAngle() * (M_PI / 180);
 
-	double temp = joyYPower * sin(YawRads) + joyXPower * cos(YawRads);
-	double tempX = -joyYPower * cos(YawRads) + joyXPower * sin(YawRads);
-	joyYPower = temp;
-	joyXPower = tempX;
+	double theta = atan2(joyYPower, joyXPower) - YawRads;
+	double power = hypot(joyXPower, joyYPower);
 
-	double x_rotated = joyXPower;
-	double y_rotated = joyYPower;
+	double SinComponent = sin(theta - M_PI/4);
+	double CosComponent = cos(theta - M_PI/4);
+	double MaxComponent = std::max(fabs(SinComponent), fabs(CosComponent));
+
 
 	double motors [4] = {0,0,0,0};
 
-		// TODO: comine strafe, forward and rotate into one pair
+	motors[0] = power * CosComponent/MaxComponent + joyZPower;
+	motors[1] = power * SinComponent/MaxComponent + joyZPower;
 
-		// if going left, spin left wheels outer from eachother, spin right inner
-		/// apply strafe
-		motors[0] += (x_rotated);
-		motors[1] += (-x_rotated);
+	motors[2] = power * CosComponent/MaxComponent + joyZPower;
+	motors[3] = power * SinComponent/MaxComponent + joyZPower;
 
-		motors[2] += (-x_rotated);
-		motors[3] += (x_rotated);
+	if ((power + fabs(joyZPower)) > 1) {
+		motors[0] /= power + joyZPower;
+		motors[1] /= power + joyZPower;
 
-		/// apply forward and backwards
-		// left
-		motors[0] += (y_rotated);
-		motors[1] += (y_rotated);
-
-		// right
-		motors[2] += (-y_rotated);
-		motors[3] += (-y_rotated);
-
-		/// apply rotation
-		// left
-		motors[0] -= (joyZPower);
-		motors[1] -= (joyZPower);
-
-		// right
-		motors[2] -= (joyZPower);
-		motors[3] -= (joyZPower);
+		motors[2] /= power + joyZPower;
+		motors[3] /= power + joyZPower;
+	}
 
 
 	frontL.Set(motors[0]);
