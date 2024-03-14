@@ -13,8 +13,6 @@
 #include "Auto.h"
 #include "Arm.h"
 #include <frc/filter/SlewRateLimiter.h>
-#include <thread>
-#include <chrono>
 #include "cameraserver/CameraServer.h"
 #include <frc/AnalogGyro.h>
 #include <frc/TimedRobot.h>
