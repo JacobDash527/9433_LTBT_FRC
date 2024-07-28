@@ -50,7 +50,7 @@ class Robot : public frc::TimedRobot {
 			 *
 			 * Multiple navX-model devices on a single robot are supported.
 			 ************************************************************************/
-        	ahrs = new AHRS(frc::I2C::Port::kMXP);
+        	ahrs = new AHRS(frc::I2C::kMXP);
         } 
 		catch (std::exception& ex ) {
 		 	std::cout << "error could not find AHRS!!" << "\n";
@@ -71,13 +71,12 @@ class Robot : public frc::TimedRobot {
 	frc::Joystick controller2{0};
  
 	// Left
-	WPI_VictorSPX frontL {1};
-	WPI_VictorSPX backL {0};
-
+	rev::CANSparkMax frontL {1, rev::CANSparkMax::MotorType::kBrushed};
+	rev::CANSparkMax backL {2, rev::CANSparkMax::MotorType::kBrushed};
 
 	// Right
-	WPI_VictorSPX frontR {3};
-	WPI_VictorSPX backR {2};
+	rev::CANSparkMax frontR {3, rev::CANSparkMax::MotorType::kBrushed};
+	rev::CANSparkMax backR {4, rev::CANSparkMax::MotorType::kBrushed};
 
 	frc::MecanumDrive mec_drive{frontL, backL, frontR, backR};
 

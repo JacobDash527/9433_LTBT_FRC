@@ -25,13 +25,14 @@
 
 void Robot::RobotInit() {
 	std::cout << "-- LTBT Robot Program Start --" << std::endl;
-
-	cs::UsbCamera camera = frc::CameraServer::StartAutomaticCapture();
-	camera.SetResolution(640, 480);
-	cs::CvSink cvSink = frc::CameraServer::GetVideo();
-	cs::CvSource outputStream = frc::CameraServer::PutVideo("Video", 640, 480);
+	// ahrs->Reset();
 	
-	ahrs->Reset();
+	// cs::UsbCamera camera = frc::CameraServer::StartAutomaticCapture();
+	// camera.SetResolution(640, 480);
+	// cs::CvSink cvSink = frc::CameraServer::GetVideo();
+	// cs::CvSource outputStream = frc::CameraServer::PutVideo("Video", 640, 480);
+	
+	// ahrs->Reset();
 	
 	// frc::CameraServer::StartAutomaticCapture();
 
@@ -209,7 +210,7 @@ void Robot::TeleopPeriodic()
 
 	using namespace frc;
 	
-	// std::cout << "GetAngle:" << ahrs->GetAngle() << "\n";
+	std::cout << "GetAngle:" << ahrs->GetAngle() << "\n";
 	// std::cout << "GetRads:" << ahrs->GetAngle() * (M_PI / 180) << "\n"; 
 	// std::cout << "GetRadsSin:" << sin(ahrs->GetAngle() * (M_PI / 180)) << "\n"; 
 	// std::cout << "GetRadsCos:" << cos(ahrs->GetAngle() * (M_PI / 180)) << "\n"; 
@@ -260,11 +261,11 @@ void Robot::TeleopPeriodic()
 		motors[3] -= (joyZPower);
 
 
-	frontL.Set(motors[0]);
-	backL.Set(motors[1]);
+	frontL.Set(-motors[0]);
+	backL.Set(-motors[1]);
 
-	backR.Set(motors[2]);
-	frontR.Set(motors[3]);
+	backR.Set(-motors[2]);
+	frontR.Set(-motors[3]);
 
 	// Wait(0.02_s);
 
