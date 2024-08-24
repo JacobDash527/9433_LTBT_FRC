@@ -71,25 +71,20 @@ class Robot : public frc::TimedRobot {
 	frc::Joystick controller2{0};
  
 	// Left
-	WPI_VictorSPX frontL {1};
-	WPI_VictorSPX backL {0};
-
+	rev::CANSparkMax frontL {2, rev::CANSparkMax::MotorType::kBrushed};
+	rev::CANSparkMax backL {1, rev::CANSparkMax::MotorType::kBrushed};
 
 	// Right
-	WPI_VictorSPX frontR {3};
-	WPI_VictorSPX backR {2};
+	rev::CANSparkMax frontR {3, rev::CANSparkMax::MotorType::kBrushed};
+	rev::CANSparkMax backR {4, rev::CANSparkMax::MotorType::kBrushed};
+
 
 	frc::MecanumDrive mec_drive{frontL, backL, frontR, backR};
 
-	WPI_VictorSPX climber {4};
-	// WPI_VictorSPX bendTwo {11};
-	// WPI_VictorSPX intake1 {12};
-	// WPI_VictorSPX intake2 {13};
+	WPI_VictorSPX arm {5};
+	WPI_VictorSPX climber {6};
 
-	//frc::Spark shooter{5};
-	rev::CANSparkMax intake{5, rev::CANSparkMax::MotorType::kBrushless};
-
-	WPI_VictorSPX arm{6};
+	rev::CANSparkMax intake{7, rev::CANSparkMax::MotorType::kBrushless};
 
 
 	int _leftTrigger = controller.GetRawAxis(2);
@@ -101,7 +96,8 @@ class Robot : public frc::TimedRobot {
 	
 	double maxSpeed = 0.9;
 	double autoSpeed = 0.25; 
-	double armSpeed = 1;
+	double intakeSpeed = 1;
+	double armSpeed = 0.5;
 
 	frc::SlewRateLimiter<units::scalar> filter{0.9 / 1_s};	
 	frc::SlewRateLimiter<units::scalar> signFilter{0.5 / 1_s};	

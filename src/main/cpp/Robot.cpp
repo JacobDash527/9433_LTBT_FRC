@@ -308,14 +308,14 @@ void Robot::TeleopPeriodic()
 
     if (_leftJoy >= 0.1)
     {
-        armSpeed = _leftJoy;
-		intake.Set(armSpeed);
+        intakeSpeed = _leftJoy;
+		intake.Set(intakeSpeed);
      
     }
     else if (_leftJoy <= -0.1)
     {
-        armSpeed = _leftJoy*_leftJoy*0.6;
-		intake.Set(-armSpeed);
+        intakeSpeed = _leftJoy*_leftJoy*0.6;
+		intake.Set(-intakeSpeed);
        
     }
     else
@@ -324,6 +324,23 @@ void Robot::TeleopPeriodic()
      
     }
 
+    if (_rightJoy >= 0.1)
+    {
+        armSpeed = _rightJoy*_rightJoy;
+		arm.Set(armSpeed);
+     
+    }
+    else if (_rightJoy <= -0.1)
+    {
+        armSpeed = _rightJoy*_rightJoy;
+		arm.Set(-armSpeed);
+       
+    }
+    else
+    {
+        arm.Set(0);
+     
+    }
 }
 
 
